@@ -8,9 +8,9 @@ import java.util.TimeZone;
 
 
 public class Main {
-    static String USERNAME = "m";
-    static String PASSWORD = "1";
-    static String FRIENDNAME = "testnatclient";
+    static String USERNAME = "testclient3";
+    static String PASSWORD = "123";
+    static String FRIENDNAME = "marti";
     static UserData user;
     static int REQ_LISTEN_REFRESH = 5*1000;
     static int MAX_REQUEST_DIFF = 10*1000;
