@@ -8,7 +8,7 @@ import java.util.TimeZone;
 
 
 public class Main {
-    static String USERNAME = "testclient3";
+    static String USERNAME = "receivertester";
     static String PASSWORD = "123";
     static String FRIENDNAME = "marti";
     static UserData user;
@@ -87,6 +87,26 @@ public class Main {
         OkClient client = new OkClient();
         user.username = USERNAME;
         user.password = PASSWORD;
+
+        if (args.length == 1){
+            FRIENDNAME = args[0];
+        }
+
+        else if (args.length == 3){
+            user.username = args[0];
+            user.password = args[1];
+            FRIENDNAME = args[2];
+        }
+
+        else if (args.length != 0){
+            System.out.println("Usage 1: no args");
+            System.out.println("   " + USERNAME + " with password " + PASSWORD + " connects to " + FRIENDNAME);
+            System.out.println("Usage 2: <friend_name>");
+            System.out.println("   " + USERNAME + " with password " + PASSWORD + " connects to <friend_name>");
+            System.out.println("Usage 3: <user_name> <password> <friend_name>");
+            System.out.println("   <user_name> with password <password> connects to <friend_name>");
+            return;
+        }
 
         try {
             //logon
