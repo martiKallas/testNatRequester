@@ -27,7 +27,7 @@ public class ConnectionManager {
     private static Gson gson = new Gson();
     private UserData user = null;
     private ArrayList<Socket> openSockets = new ArrayList<>();
-    private int nextPort = 9000;
+    private int nextPort = 59870;
     private Socket nextSocket = null;
 
 
@@ -43,47 +43,49 @@ public class ConnectionManager {
             e.printStackTrace();
             return -1;
         }
-        return nextPort;
+        int temp = nextPort;
+        nextPort++; //increment to avoid conflicts
+        return temp;
     }
 
     private void findNextSocket() throws SocketException {
-        if (nextPort > 65535) throw new SocketException();
-        boolean socketFound = false;
-        while (!socketFound) {
+        if (nextPort > 65535){
+            nextPort = 15000;
+        }
+        while (true) {
             try {
                 nextSocket = new Socket();
                 nextSocket.setReuseAddress(true);
                 nextSocket.bind(new InetSocketAddress(nextPort));
                 nextSocket.connect(new InetSocketAddress(STUN_ADDRESS, STUN_PORT), STUN_TIMEOUT);
-                STUNRegistration validation = new STUNRegistration(user, API_TOKEN);
+                STUNRegistration validation = new STUNRegistration(user, API_TOKEN, nextPort);
                 String json = gson.toJson(validation);
-                //System.out.println(json);
+                System.out.println(json);
                 sendMessage(json);
                 String res = "";
-                BufferedReader input = getBuffer(nextSocket);
                 try {
-                    res = input.readLine();
+                    System.out.println("Connected to STUN on port: " + nextPort);
+                    res = getMessage();
                 }
                 catch(SocketTimeoutException e){
                     e.printStackTrace();
                     System.out.println("Socket receive timeout");
                     nextSocket.close();
-                    return;
+                    throw new SocketException();
                 }
                 nextSocket.close();
-                System.out.println("Response from STUN:" + res);
-                //System.out.println("Port: " + nextPort);
-                socketFound = true;
+                System.out.println("Good STUN Response:" + res);
+                return;
             }
             catch(IOException e){
-                System.out.println("Port incremented");
+                System.out.println("Socket exception, trying next port");
                 nextPort++;
             }
         }
     }
 
     private String getMessage() throws IOException, SocketTimeoutException {
-        BufferedReader bufferedReader = getBuffer(nextSocket);
+        BufferedReader bufferedReader = getBuffer();
         try {
             return bufferedReader.readLine();
         }
@@ -93,19 +95,19 @@ public class ConnectionManager {
     }
 
 
-    private BufferedReader getBuffer(Socket connectionClient) throws IOException{
-        InputStream inputStream = connectionClient.getInputStream();
+    private BufferedReader getBuffer() throws IOException{
+        InputStream inputStream = nextSocket.getInputStream();
         return new BufferedReader((new InputStreamReader(inputStream)));
     }
 
 
     private void sendMessage(String message) throws IOException {
-        PrintWriter out = writeToBuffer(nextSocket);
+        PrintWriter out = writeToBuffer();
         out.println(message);
     }
 
-    private PrintWriter writeToBuffer(Socket socket) throws IOException{
-        OutputStream out = socket.getOutputStream();
+    private PrintWriter writeToBuffer() throws IOException{
+        OutputStream out = nextSocket.getOutputStream();
         return new PrintWriter(out, true);
     }
 }

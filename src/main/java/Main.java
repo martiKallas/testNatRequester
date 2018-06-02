@@ -59,7 +59,7 @@ public class Main {
         System.out.println("Attempting to connect to " + req.requestingIPaddress + ":" + req.requestingPort);
         try {
             PeerConnection connection = new PeerConnection(user, req);
-            connection.connectNatPunch();
+            connection.connectNatPunch(port);
         }
         catch(IOException e){
             e.printStackTrace();
@@ -121,7 +121,7 @@ public class Main {
             try {
                 ChatRequest req = client.makeChatRequest(user, FRIENDNAME);
                 PeerConnection peer = new PeerConnection(user, req);
-                peer.connectNatPunch();
+                peer.connectNatPunch(port);
             }
             catch (IOException e) {
                 e.printStackTrace();
