@@ -10,7 +10,7 @@ import java.util.TimeZone;
 public class Main {
     static String USERNAME = "receivertester";
     static String PASSWORD = "123";
-    static String FRIENDNAME = "marti";
+    static String FRIENDNAME = "testclient";
     static UserData user;
     static int REQ_LISTEN_REFRESH = 5*1000;
     static int MAX_REQUEST_DIFF = 10*1000;
