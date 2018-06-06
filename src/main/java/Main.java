@@ -8,7 +8,7 @@ import java.util.TimeZone;
 
 
 public class Main {
-    static String USERNAME = "receivertester";
+    static String USERNAME = "requestertester";
     static String PASSWORD = "123";
     static String FRIENDNAME = "testclient";
     static UserData user;
@@ -89,7 +89,9 @@ public class Main {
         user.password = PASSWORD;
 
         if (args.length == 1){
-            FRIENDNAME = args[0];
+            if (args[0].length() > 0) {
+                FRIENDNAME = args[0];
+            }
         }
 
         else if (args.length == 3){
